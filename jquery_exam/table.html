@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table</title>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.3"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+    
+    
+  <div class="container mx-auto p-3" x-data="{ showFilters: false, openRows: {} }">
+    <!-- Header with buttons -->
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Tabela z Danymi</h2>
+      <div class="space-x-2">
+        <!-- Button to toggle filters using Alpine.js -->
+        <button
+          @click="showFilters = !showFilters"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Filtry
+        </button>
+        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+          Dodaj Nowy Rekord
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Bar controlled by Alpine.js -->
+    <div x-show="showFilters" class="mb-4">
+      <div class="bg-white p-4 rounded shadow">
+        <label for="filter-input" class="block text-sm font-medium text-gray-700">Filtruj:</label>
+        <input
+          type="text"
+          id="filter-input"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          placeholder="Wpisz tekst, aby filtrować..."
+        >
+      </div>
+    </div>
+
+    <!-- Responsive Data Table -->
+    <div class="overflow-x-auto shadow-lg rounded-lg bg-white">
+      <table class="min-w-full bg-white">
+        <!-- Table Head -->
+        <thead class="bg-gray-200 hidden md:table-header-group">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imię</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nazwisko</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wiek</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Akcje</th>
+          </tr>
+        </thead>
+
+        <!-- Table Body -->
+        <tbody class="bg-white divide-y divide-gray-200">
+          <!-- Record 1 -->
+          <tr class="md:hidden">
+            <!-- Mobile View: Main Row -->
+            <td class="px-6 py-4 flex justify-between items-center" @click="openRows[1] = !openRows[1]">
+              <div>
+                <span class="font-medium">Jan</span> <span class="text-gray-500">(30)</span>
+              </div>
+              <div class="space-x-2">
+                <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
+                  ✏️
+                </button>
+                <button class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                  👁️
+                </button>
+                <button class="bg-gray-300 text-gray-700 px-2 py-1 rounded hover:bg-gray-400">
+                  <span x-show="!openRows[1]">⬇️</span>
+                  <span x-show="openRows[1]">⬆️</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr x-show="openRows[1]" class="md:hidden">
+            <td colspan="4" class="px-6 py-4 bg-gray-100">
+              <div class="space-y-2">
+                <div><strong>Imię:</strong> Jan</div>
+                <div><strong>Nazwisko:</strong> Kowalski</div>
+                <div><strong>Wiek:</strong> 30</div>
+                <div><strong>Akcje:</strong>
+                  <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 mr-2">Edytuj</button>
+                  <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Podgląd</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Record 2 -->
+          <tr class="md:hidden">
+            <td class="px-6 py-4 flex justify-between items-center" @click="openRows[2] = !openRows[2]">
+              <div>
+                <span class="font-medium">Anna</span> <span class="text-gray-500">(28)</span>
+              </div>
+              <div class="space-x-2">
+                <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
+                  ✏️
+                </button>
+                <button class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                  👁️
+                </button>
+                <button class="bg-gray-300 text-gray-700 px-2 py-1 rounded hover:bg-gray-400">
+                  <span x-show="!openRows[2]">⬇️</span>
+                  <span x-show="openRows[2]">⬆️</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr x-show="openRows[2]" class="md:hidden">
+            <td colspan="4" class="px-6 py-4 bg-gray-100">
+              <div class="space-y-2">
+                <div><strong>Imię:</strong> Anna</div>
+                <div><strong>Nazwisko:</strong> Nowak</div>
+                <div><strong>Wiek:</strong> 28</div>
+                <div><strong>Akcje:</strong>
+                  <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 mr-2">Edytuj</button>
+                  <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Podgląd</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Record 3 -->
+          <tr class="md:hidden">
+            <td class="px-6 py-4 flex justify-between items-center" @click="openRows[3] = !openRows[3]">
+              <div>
+                <span class="font-medium">Marek</span> <span class="text-gray-500">(35)</span>
+              </div>
+              <div class="space-x-2">
+                <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
+                  ✏️
+                </button>
+                <button class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                  👁️
+                </button>
+                <button class="bg-gray-300 text-gray-700 px-2 py-1 rounded hover:bg-gray-400">
+                  <span x-show="!openRows[3]">⬇️</span>
+                  <span x-show="openRows[3]">⬆️</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr x-show="openRows[3]" class="md:hidden">
+            <td colspan="4" class="px-6 py-4 bg-gray-100">
+              <div class="space-y-2">
+                <div><strong>Imię:</strong> Marek</div>
+                <div><strong>Nazwisko:</strong> Wiśniewski</div>
+                <div><strong>Wiek:</strong> 35</div>
+                <div><strong>Akcje:</strong>
+                  <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 mr-2">Edytuj</button>
+                  <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Podgląd</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Desktop View -->
+          <tr class="hidden md:table-row">
+            <td class="px-6 py-4 whitespace-nowrap">Jan</td>
+            <td class="px-6 py-4 whitespace-nowrap">Kowalski</td>
+            <td class="px-6 py-4 whitespace-nowrap">30</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right">
+              <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 mr-2">Edytuj</button>
+              <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Podgląd</button>
+            </td>
+          </tr>
+          <tr class="hidden md:table-row">
+            <td class="px-6 py-4 whitespace-nowrap">Anna</td>
+            <td class="px-6 py-4 whitespace-nowrap">Nowak</td>
+            <td class="px-6 py-4 whitespace-nowrap">28</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right">
+              <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 mr-2">Edytuj</button>
+              <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Podgląd</button>
+            </td>
+          </tr>
+          <tr class="hidden md:table-row">
+            <td class="px-6 py-4 whitespace-nowrap">Marek</td>
+            <td class="px-6 py-4 whitespace-nowrap">Wiśniewski</td>
+            <td class="px-6 py-4 whitespace-nowrap">35</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right">
+              <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 mr-2">Edytuj</button>
+              <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Podgląd</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-4">
+      <nav class="inline-flex rounded-md shadow-sm">
+        <button class="px-3 py-2 bg-gray-200 text-gray-600 rounded-l-md hover:bg-gray-300"> &lt; </button>
+        <button class="px-3 py-2 bg-blue-500 text-white hover:bg-blue-600">1</button>
+        <button class="px-3 py-2 bg-gray-200 text-gray-600 hover:bg-gray-300">2</button>
+        <button class="px-3 py-2 bg-gray-200 text-gray-600 hover:bg-gray-300">3</button>
+        <button class="px-3 py-2 bg-gray-200 text-gray-600 rounded-r-md hover:bg-gray-300"> &gt; </button>
+      </nav>
+    </div>
+  </div>
+
+</body>
+</html>

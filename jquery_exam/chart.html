@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chart</title>
+</head>
+<body>
+    <div id="legendContainer" class="benchmarklegend"></div>
+<canvas id="scatterChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('scatterChart');
+var scatterChart = new Chart(ctx.getContext('2d'), {
+    type: 'scatter',
+    data: {
+        datasets: [
+        	{
+                label: 'One',
+                backgroundColor: '#6F34A1',
+                data: [{x: 0, y: 6}, {x: 25, y: 4}, {x: 125, y: 5}]
+            }, 
+            {
+                label: 'Two',
+                backgroundColor: '#AFCD80',
+	            data: [{x: 50, y: 2}, {x: 100, y: 3.5}, {x: 175, y: 7}]
+            }, 
+            {
+                label: 'Three',
+                backgroundColor: '#FC714D',
+                data: [{x: 75, y: 1}, {x: 150, y: 2.8}, {x: 225, y: 2}]
+            }, 
+            {
+                label: 'Four',
+                backgroundColor: '#DBD8D8',
+	            data: [{x: 25, y: 1.5}, {x: 75, y: 3}, {x: 200, y: 4}]
+            }, 
+            {
+                label: 'Five',
+                backgroundColor: '#90B8F0',
+                data: [{x: 100, y: 2.2}, {x: 125, y: 6}, {x: 250, y: 4}]
+            }, 
+            {
+                label: 'Six',
+                backgroundColor: '#DBD8D8',
+                data: [{x: 50, y: 3}, {x: 175, y: 8}, {x: 275, y: 7}]
+            }, 
+            {
+                label: 'Seven',
+                backgroundColor: '#115CD9',
+                data: [{x: 75, y: 3.5}, {x: 60, y: 5}, {x: 17, y: 6}]
+            }
+        ]
+    },
+    options: {
+    	responsive: true,
+    	maintainAspectRatio: true,
+        elements: {
+            point: {
+                radius: 5,
+                pointStyle: 'circle',
+            }
+        },
+        scales: {
+            y: {
+                title: {
+                    display: true,
+                    text: 'Left Side',
+                    font: { 
+                    	size: 16, 
+                    	weight: 400,
+                    	family: "Messina Sans",
+                    }
+                },
+                ticks: {
+                    stepSize: 2,
+                    callback: function(value, index, values) {
+                        return value + 'x';
+                    }
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Bottom Side',
+                    font: { 
+                    	size: 16,
+                    	weight: 400,
+                    	family: "Messina Sans", 
+                    }
+                },
+                ticks: {
+                    min: -25,
+                    stepSize: 25,
+                    callback: function(value, index, values) {
+                        return value + '%';
+                    }
+                },
+                grid: {
+                  	display: false
+                }
+            },
+        },
+        plugins: {
+			legend: {
+	        	display: false,
+	      	},
+	      	title: {
+	      		display: false,
+	      	},
+	      	tooltip: {
+	      	    enabled: false,
+	      	    external: function(context) {
+	      	        let tooltipEl = document.getElementById('chartjs-tooltip');
+
+	      	        if (!tooltipEl) {
+	      	            tooltipEl = document.createElement('div');
+	      	            tooltipEl.id = 'chartjs-tooltip';
+	      	            tooltipEl.innerHTML = '<div class="tooltip-data" style="padding: 10px 15px; border: 1px solid #191618; border-radius: 9px; background: #FFF; box-shadow: 0px 24px 24px 0px rgba(0, 0, 0, 0.06);"></div>';
+	      	            document.body.appendChild(tooltipEl);
+	      	        }
+
+	      	        const tooltipModel = context.tooltip;
+	      	        if (tooltipModel.opacity === 0) {
+	      	            tooltipEl.style.opacity = 0;
+	      	            return;
+	      	        }
+
+	      	        const title = context.chart.data.datasets[tooltipModel.dataPoints[0].datasetIndex].label;
+	      	        const xValue = context.tooltip.dataPoints[0].parsed.x;
+	      	        const yValue = context.tooltip.dataPoints[0].parsed.y;
+
+	      	        if (tooltipModel.body) {
+	      	            let innerHtml = '<h5 class="title" style="font-size: clamp(1rem, 2.5vw, 1.5rem); font-weight: 700; line-height: 24px; margin-bottom: 5px; color: ' + tooltipModel.labelColors[0].backgroundColor + '">' + title + '</h5>';
+	      	            innerHtml += '<div class="text" style="color: #000; font-size: 12px; font-weight: 400; line-height: 14px; font-family: \'Messina Sans\'">';
+	      	            innerHtml += '<div style="margin-bottom: 3px">' + context.chart.options.scales.x.title.text + ': ' + xValue + '%</div>';
+	      	            innerHtml += '<div style="margin-bottom: 0px">' + context.chart.options.scales.y.title.text + ': ' + yValue + 'x</div>';
+	      	            innerHtml += '</div>';
+
+	      	            let tooltipContent = tooltipEl.querySelector('.tooltip-data');
+	      	            tooltipContent.innerHTML = innerHtml;
+	      	        }
+
+	      	        const position = context.chart.canvas.getBoundingClientRect();
+	      	        const bodyFont = Chart.helpers.toFont(tooltipModel.options.bodyFont);
+
+	      	        tooltipEl.style.opacity = 1;
+	      	        tooltipEl.style.position = 'absolute';
+	      	        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - (tooltipEl.offsetWidth / 3) + 'px';
+	      	        tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.offsetHeight - 7 + 'px';
+	      	        tooltipEl.style.font = bodyFont.string;
+	      	        tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
+	      	        tooltipEl.style.pointerEvents = 'none';
+	      	    }
+	      	}
+        },
+    }
+});
+
+// Generate dynamic legend HTML
+var dynamicLegendHTML = generateDynamicLegend(scatterChart.data.datasets);
+var legendContainer = document.getElementById('legendContainer');
+
+if (legendContainer) {
+    legendContainer.innerHTML = dynamicLegendHTML;
+
+    var legendItems = legendContainer.querySelectorAll('.legend-item');
+    legendItems.forEach(function(item, index) {
+        item.addEventListener('click', function() {
+            toggleDatasetVisibility(item, scatterChart, index);
+        });
+    });
+}
+
+function generateDynamicLegend(datasets) {
+    var legendHTML = '<ul class="legend list-inline d-flex flex-wrap">';
+    for (var i = 0; i < datasets.length; i++) {
+        legendHTML += `
+      <li class="legend-item d-flex align-items-center justify-content-between">
+        ${datasets[i].label}
+        <span class="legend-color" style="background-color: ${datasets[i].backgroundColor};"></span>
+      </li>`;
+    }
+    legendHTML += '</ul>';
+    return legendHTML;
+}
+
+// Function to toggle dataset visibility
+function toggleDatasetVisibility(item, chart, datasetIndex) {
+    var meta = chart.getDatasetMeta(datasetIndex);
+    meta.hidden = meta.hidden === null ? !chart.data.datasets[datasetIndex].hidden : null;
+    chart.update();
+
+    // Toggle class for legend item
+    item.classList.toggle('hidden');
+}
+</script>
+</body>
+</html>
